@@ -1,0 +1,10 @@
+{
+    "name": "mordisacks/laravel-starter",
+    "description": "A Laravel starter kit",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Mordi Sacks"
+        }
+    ]
+}
