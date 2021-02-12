@@ -15,7 +15,8 @@
     "require": {
         "php": "^7.3|^8.0",
         "illuminate/filesystem": "^8.0",
-        "illuminate/support": "^8.0"
+        "illuminate/support": "^8.0",
+        "ext-json": "*"
     },
     "autoload": {
         "psr-4": {
