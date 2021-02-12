@@ -57,9 +57,27 @@ class InstallCommand extends Command
         (new Filesystem)->deleteDirectory(resource_path('css'));
         (new Filesystem)->deleteDirectory(resource_path('js'));
 
-        // create mixes
-        (new Filesystem)->ensureDirectoryExists(resource_path('mixes'));
-        (new Filesystem)->copyDirectory(__DIR__ . '/../../stubs/resources/mixes', resource_path('mixes'));
+        // copy mixes
+        (new Filesystem)->ensureDirectoryExists(resource_path('mixes/auth'));
+        (new Filesystem)->copyDirectory(__DIR__ . '/../../stubs/resources/mixes/auth', resource_path('mixes/auth'));
+
+        (new Filesystem)->ensureDirectoryExists(resource_path('mixes/app'));
+        (new Filesystem)->copyDirectory(__DIR__ . '/../../stubs/resources/mixes/app', resource_path('mixes/app'));
+
+        // copy views
+        (new Filesystem)->ensureDirectoryExists(resource_path('views/auth'));
+        (new Filesystem)->copyDirectory(__DIR__ . '/../../stubs/resources/views/auth', resource_path('views/auth'));
+
+        // copy controllers
+        (new Filesystem)->ensureDirectoryExists(app_path('Http/Controllers/Auth'));
+        (new Filesystem)->copyDirectory(__DIR__ . '/../../stubs/App/Http/Controllers/Auth', app_path('Http/Controllers/Auth'));
+
+        // copy routes and add to web
+        copy(__DIR__ . '/../../stubs/routes/auth.php', base_path('routes/auth.php'));
+        static::appendToFileIfNeeded(
+            PHP_EOL . "require __DIR__.'/auth.php';" . PHP_EOL,
+            base_path('routes/web.php')
+        );
     }
 
     /**
@@ -138,5 +156,51 @@ class InstallCommand extends Command
             base_path('package.json'),
             json_encode($packages, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) . PHP_EOL
         );
+    }
+
+    /**
+     * Replace a given string within a given file.
+     *
+     *
+     * @param string $search
+     * @param string $replace
+     * @param string $path
+     *
+     * @return void
+     */
+    protected static function replaceInFile(string $search, string $replace, string $path)
+    {
+        file_put_contents($path, str_replace($search, $replace, file_get_contents($path)));
+    }
+
+    /**
+     * Append a given string to a given file
+     * if does not already exist.
+     *
+     *
+     * @param string $string
+     * @param string $path
+     *
+     * @return void
+     */
+    protected static function appendToFileIfNeeded(string $string, string $path)
+    {
+        $fh = fopen($path, 'r+');
+
+        // Check if exists
+        while (!feof($fh)) {
+            $buffer = fgets($fh);
+            if (strpos($buffer, trim($string)) === false) {
+                continue;
+            }
+
+            fclose($fh);
+            return;
+        }
+
+        // Append
+        fwrite($fh, $string);
+
+        fclose($fh);
     }
 }

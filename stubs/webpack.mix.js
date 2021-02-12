@@ -1,6 +1,6 @@
 const mix = require('laravel-mix');
 
-process.env.section = 'app';
+process.env.section = 'auth';
 
 if (!mix.inProduction()) {
     mix.sourceMaps();

@@ -1,6 +1,6 @@
 module.exports = {
     purge: [
-        //'./resources/views/app/**/*.blade.php',
+        './resources/views/auth/**/*.blade.php',
     ],
     darkMode: false, // or 'media' or 'class'
     theme: {
